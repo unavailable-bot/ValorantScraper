@@ -12,5 +12,11 @@
   <ItemGroup>
     <Content Include="icons8-valorant-512.ico" />
   </ItemGroup>
+  
+   <ItemGroup>
+    <Content Include="Data\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
