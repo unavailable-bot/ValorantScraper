@@ -1,6 +1,6 @@
 # ValorantScraper
 
- ---------> current ver[[https://github.com/unavailable-bot/ValorantScraper/releases/tag/1.0.1](https://github.com/unavailable-bot/ValorantScraper/releases/tag/1.0.2)]
+ ---------> current ver[https://github.com/unavailable-bot/ValorantScraper/releases/tag/1.0.1](https://github.com/unavailable-bot/ValorantScraper/releases/tag/1.0.2)
 
 This tool is perfect for anyone who wants to create a clean and appealing description of their Valorant account — or even multiple accounts. Just input your list of skins, agents, and all other valuable info (like rank, gun buddies, region, etc.) and hit generate 🛠️.
 
