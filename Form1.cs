@@ -8,6 +8,15 @@
 
     public partial class ValorantScraper : Form
     {
+        internal enum SoftMode
+        {
+            Skinned = 0,
+            Ranked = 1
+        }
+
+        private int skinsCount;
+        private SoftMode currentMode = 0;
+
         private string imageFolderPath = @"Data\skins_Base";
         private string agentsFolderPath = @"Data\agents_Base";
         private string iconFolderPath = @"Data\icons_Base";
@@ -29,7 +38,8 @@
             { "Coalition: Cobra Frenzy", "Coalition Cobra Frenzy" },
             { "Coalition: Cobra Judge", "Coalition Cobra Judge" },
             { "Coalition: Cobra Marshal", "Coalition Cobra Marshal" },
-            { "Coalition: Cobra Odin", "Coalition Cobra Odin" }
+            { "Coalition: Cobra Odin", "Coalition Cobra Odin" },
+            { "5 Years // Beta Remastered Knife", "5 Years Beta Remastered Knife" }
         };
 
         private Dictionary<string, string> agentsNameReplacements = new Dictionary<string, string>
@@ -73,17 +83,21 @@
         public ValorantScraper()
         {
             InitializeComponent();
+            InitializeItems();
+        }
 
+        private void InitializeItems()
+        {
             // Добавляем значения в ComboBox для Region
             combRegion.Items.AddRange(new string[] { "AP", "EU", "NA", "LATAM", "BR", "KR", "TUR" });
 
             // Добавляем значения в ComboBox для Rank
-            combRank.Items.AddRange(new string[] { "Unrated", "Ranked Ready", "Full Unranked Ranked Ready",
+            combRank.Items.AddRange(new string[] { "Ranked Ready", "Full Ranked Ready",
                                                "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
                                                "DIAMOND", "ASCENDANT", "IMMORTAL", "RADIANT" });
 
             // Добавляем значения в ComboBox для Episode
-            combEpisode.Items.AddRange(new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            combEpisode.Items.AddRange(new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "V25" });
 
             // Добавляем значения в ComboBox для Act
             combAct.Items.AddRange(new string[] { "1", "2", "3" });
@@ -92,115 +106,7 @@
             combTier.Items.AddRange(new string[] { "1", "2", "3" });
         }
 
-
-
-        private string? GetIconForFolder(string folderName)
-        {
-            switch (folderName)
-            {
-                case "exc_knife":
-                case "exclusive":
-                case "m_knifes":
-                case "l_knifes":
-                case "e_knifes":
-                case "r_knifes":
-                case "c_knifes":
-                case "legendary":
-                    return Path.Combine(iconFolderPath, "legendary.png");
-                case "mythic":
-                    return Path.Combine(iconFolderPath, "mythic.png");
-                case "epic":
-                    return Path.Combine(iconFolderPath, "epic.png");
-                case "rare":
-                    return Path.Combine(iconFolderPath, "rare.png");
-                case "common":
-                    return Path.Combine(iconFolderPath, "common.png");
-                default:
-                    return null; // Или путь к стандартной иконке
-            }
-        }
-
-        private void btnGenerate_Click(object sender, EventArgs e)
-        {
-            // Создаем новую форму для отображения изображений
-            Form2 imageDisplayForm = new Form2();
-            AgentsResult imageDisplayAgentsForm = new AgentsResult();
-
-            // Получаем список скинов из поля ввода
-            string[] skins = txtSkins.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-            string[] agents = txtCharacters.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-            // Список для хранения не найденных скинов
-            List<string> unmatchedSkins = new List<string>();
-
-            // Список для хранения отсортированных названий скинов
-            List<string> sortedSkinNames = new List<string>();
-
-            var skinDetailsList = new List<(string skinName, string imagePath, Color bgColor, string folderName)>();
-
-            // Проход по каждому скину из списка
-            foreach (string skin in skins)
-            {
-                // Проверяем, есть ли скин в словаре замен
-                string searchSkinName = skinNameReplacements.ContainsKey(skin) ? skinNameReplacements[skin] : skin;
-
-                // Используем метод для поиска изображения с учетом всех подкаталогов
-                var (imagePath, bgColor, folderName) = FindImageBySkinName(searchSkinName);
-
-                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
-                {
-
-                    // Добавляем найденный скин в список с деталями
-                    skinDetailsList.Add((skin, imagePath, bgColor, folderName));
-                }
-                else
-                {
-                    // Если изображение не найдено, добавляем его в список не найденных
-                    unmatchedSkins.Add(skin);
-                }
-            }
-
-            skinDetailsList = skinDetailsList.OrderBy(skinDetail => folderOrder.IndexOf(folderColors.FirstOrDefault(f => f.Value == skinDetail.bgColor).Key)).ToList();
-
-            foreach (var skinDetail in skinDetailsList)
-            {
-                AddImageToUISkins(imageDisplayForm, skinDetail.imagePath, skinDetail.skinName, skinDetail.bgColor, skinDetail.folderName);
-                sortedSkinNames.Add(skinDetail.skinName); // Сохраняем порядок отображенных скинов
-            }
-
-            foreach (string agent in agents)
-            {
-                // Проверяем, есть ли скин в словаре замен
-                string searchAgentName = agentsNameReplacements.ContainsKey(agent) ? agentsNameReplacements[agent] : agent;
-
-                // Используем метод для поиска изображения с учетом всех подкаталогов
-                string imagePath = FindImageByAgentName(searchAgentName)!; // Не забывайте использовать корректный путь
-
-                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
-                {
-                    // Вместо создания PictureBox и Label напрямую, вызываем метод AddImageToUI
-                    AddImageToUI(imageDisplayAgentsForm, imagePath, agent);
-                }
-            }
-
-            // Отображаем список не найденных скинов
-            txtUnmatchedSkins.Text = string.Join(Environment.NewLine, unmatchedSkins);
-
-            // Показываем новую форму
-            imageDisplayForm.ShowDialog();
-            imageDisplayAgentsForm.ShowDialog();
-
-            // Генерируем шаблон
-            string template = GenerateTemplate(sortedSkinNames);
-
-            // Копируем шаблон в буфер обмена
-            Clipboard.SetText(template);
-
-            // Дополнительно можно показать сообщение пользователю, что шаблон скопирован
-            MessageBox.Show("Шаблон скопирован в буфер обмена!", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
+        #region VISUALIZATOR
         private string? FindImageByAgentName(string agentName)
         {
             // Поиск изображения по имени в указанной директории
@@ -244,25 +150,31 @@
             return (null, Color.White, null)!; // Если не найдено, возвращаем null и белый цвет
         }
 
-        /*
-        private string FindImageBySkinName(string skinName)
+        private string? GetIconForFolder(string folderName)
         {
-            // Поиск изображения по имени в указанной директории и всех её подкаталогах
-            var allFiles = Directory.GetFiles(imageFolderPath, "*.*", SearchOption.AllDirectories)
-                .Where(f => f.EndsWith(".png") || f.EndsWith(".jpg")); // Допустимые расширения
-
-            // Сравнение скина с файлами в папке
-            foreach (var file in allFiles)
+            switch (folderName)
             {
-                if (Path.GetFileNameWithoutExtension(file).Equals(skinName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return file; // Возвращаем путь к найденному изображению
-                }
+                case "exc_knife":
+                case "exclusive":
+                case "m_knifes":
+                case "l_knifes":
+                case "e_knifes":
+                case "r_knifes":
+                case "c_knifes":
+                case "legendary":
+                    return Path.Combine(iconFolderPath, "legendary.png");
+                case "mythic":
+                    return Path.Combine(iconFolderPath, "mythic.png");
+                case "epic":
+                    return Path.Combine(iconFolderPath, "epic.png");
+                case "rare":
+                    return Path.Combine(iconFolderPath, "rare.png");
+                case "common":
+                    return Path.Combine(iconFolderPath, "common.png");
+                default:
+                    return null; // Или путь к стандартной иконке
             }
-
-            return null; // Если изображение не найдено
         }
-        */
 
         private void AddImageToUISkins(IImageDisplay form, string imagePath, string skinName, Color bgColor, string folderName)
         {
@@ -370,7 +282,25 @@
             // Добавление строки в основной FlowLayoutPanel
             form.FlowLayoutPanelImages.Controls.Add(panelRow);
         }
+        #endregion
 
+        #region BUTTONS
+        private void btnSoftMode_Click(object sender, EventArgs e)
+        {
+            switch (currentMode)
+            {
+                case SoftMode.Skinned:
+                    currentMode = SoftMode.Ranked;
+                    txtSoftModeStatus.Text = "Mode: Ranked";
+                    break;
+                case SoftMode.Ranked:
+                    currentMode = SoftMode.Skinned;
+                    txtSoftModeStatus.Text = "Mode: Skinned";
+                    break;
+            }
+
+        }
+        
         private void btnTransform_Click(object sender, EventArgs e)
         {
             // Получаем список скинов с дублями из поля ввода
@@ -386,7 +316,7 @@
             txtSkins.Text = string.Join(Environment.NewLine, sortedSkins);
 
             // Подсчитываем количество уникальных агентов и записываем его в txtAgentsCount
-            txtSkinsCount.Text = uniqueSkins.Count.ToString();
+            skinsCount = uniqueSkins.Count;
         }
 
         private void btnTransformAgents_Click(object sender, EventArgs e)
@@ -404,31 +334,95 @@
             txtAgentsCount.Text = uniqueAgents.Count.ToString();
         }
 
-        private string GenerateTemplate(List<string> sortedSkinNames)
+        private void btnGenerate_Click(object sender, EventArgs e)
         {
-            ScreenshotsTextBox screenshotsTextBox = new ScreenshotsTextBox();
+            // Создаем новую форму для отображения изображений
+            Form2 imageDisplayForm = new Form2();
+            AgentsResult imageDisplayAgentsForm = new AgentsResult();
 
-            screenshotsTextBox.ShowDialog();
+            // Получаем список скинов из поля ввода
+            string[] skins = txtSkins.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Собираем данные из полей
-            string level = txtLevel.Text;
-            string skinsCount = txtSkinsCount.Text;
-            string region = combRegion.SelectedItem?.ToString() ?? string.Empty;
-            string screenshots = screenshotsTextBox.ScreenshotsText;
-            string rank = combRank.SelectedItem?.ToString() ?? string.Empty;
-            string episode = combEpisode.SelectedItem?.ToString() ?? string.Empty;
-            string act = combAct.SelectedItem?.ToString() ?? string.Empty;
-            string buddies = txtBuddies.Text.Replace(Environment.NewLine, " / ");
-            string buddiesSection = !string.IsNullOrEmpty(buddies) ? $"=\n{buddies}\n=" : "=";
-            string agentsCount = txtAgentsCount.Text;
-            string rPoints = txtRPoints.Text;
-            string vPoints = txtVPoints.Text;
-            string totalVPoints = txtTotalVPoints.Text;
-            string startPrice = txtStartPrice.Text;
-            string price = txtPrice.Text;
-            string skinsList = txtSkins.Text;
-            string tier = this.combTier.SelectedItem?.ToString() ?? string.Empty;
+            string[] agents = txtCharacters.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
+            // Список для хранения не найденных скинов
+            List<string> unmatchedSkins = new List<string>();
+
+            // Список для хранения отсортированных названий скинов
+            List<string> sortedSkinNames = new List<string>();
+
+            var skinDetailsList = new List<(string skinName, string imagePath, Color bgColor, string folderName)>();
+
+            // Проход по каждому скину из списка
+            foreach (string skin in skins)
+            {
+                // Проверяем, есть ли скин в словаре замен
+                string searchSkinName = skinNameReplacements.ContainsKey(skin) ? skinNameReplacements[skin] : skin;
+
+                // Используем метод для поиска изображения с учетом всех подкаталогов
+                var (imagePath, bgColor, folderName) = FindImageBySkinName(searchSkinName);
+
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                {
+
+                    // Добавляем найденный скин в список с деталями
+                    skinDetailsList.Add((skin, imagePath, bgColor, folderName));
+                }
+                else
+                {
+                    // Если изображение не найдено, добавляем его в список не найденных
+                    unmatchedSkins.Add(skin);
+                }
+            }
+
+            skinDetailsList = skinDetailsList.OrderBy(skinDetail => folderOrder.IndexOf(folderColors.FirstOrDefault(f => f.Value == skinDetail.bgColor).Key)).ToList();
+
+            foreach (var skinDetail in skinDetailsList)
+            {
+                AddImageToUISkins(imageDisplayForm, skinDetail.imagePath, skinDetail.skinName, skinDetail.bgColor, skinDetail.folderName);
+                sortedSkinNames.Add(skinDetail.skinName); // Сохраняем порядок отображенных скинов
+            }
+
+            foreach (string agent in agents)
+            {
+                // Проверяем, есть ли скин в словаре замен
+                string searchAgentName = agentsNameReplacements.ContainsKey(agent) ? agentsNameReplacements[agent] : agent;
+
+                // Используем метод для поиска изображения с учетом всех подкаталогов
+                string imagePath = FindImageByAgentName(searchAgentName)!; // Не забывайте использовать корректный путь
+
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                {
+                    // Вместо создания PictureBox и Label напрямую, вызываем метод AddImageToUI
+                    AddImageToUI(imageDisplayAgentsForm, imagePath, agent);
+                }
+            }
+
+            // Отображаем список не найденных скинов
+            txtUnmatchedSkins.Text = string.Join(Environment.NewLine, unmatchedSkins);
+
+            // Показываем новую форму
+            imageDisplayForm.ShowDialog();
+            imageDisplayAgentsForm.ShowDialog();
+
+            GenerateTemplate(sortedSkinNames, out string template, currentMode);
+
+            // Копируем шаблон в буфер обмена
+            Clipboard.SetText(template);
+
+            // Дополнительно можно показать сообщение пользователю, что шаблон скопирован
+            MessageBox.Show("Шаблон скопирован в буфер обмена!", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            ResetAllFields(this);
+        }
+        #endregion
+
+        #region TEMPLATES
+        private void GenerateTemplate(List<string> sortedSkinNames, out string result, SoftMode current = SoftMode.Skinned)
+        {
             List<string> knifeFolders = new List<string>
             {
                 "exc_knife",
@@ -487,39 +481,124 @@
                 ? $"-------------------------GunSkins$\n{formattedSkinsList}\n\n-------------------------KnifeSkins$\n{formattedKnifeSkinsList}"
                 : $"-------------------------GunSkins$\n{formattedSkinsList}";
 
-            string knifeSkin = sortedKnifeSkins.Count > 0 ? sortedKnifeSkins[0] : "No Knife";
-            string skin1 = otherSkins.Count > 0 ? otherSkins[0] : "No Skin";
-            string skin2 = otherSkins.Count > 1 ? otherSkins[1] : "No Skin";
-            string skin3 = otherSkins.Count > 2 ? otherSkins[2] : "No Skin";
-            string skin4 = otherSkins.Count > 3 ? otherSkins[3] : "No Skin";
-
-            // Шаблон с заменой значений
-            string template = $@"
-                -----------------------------------------------------------------------------------------------------------------------
-                # {{{region}}} |LvL {level}| >Skins: {skinsCount} [{knifeSkin}/{skin1}/{skin2}/{skin3}/{skin4}] #
-                =========================
-                Screenshots(in the link past '.' before 'com') -------------> {screenshots}
-
-                -------------------------------Details*
-                Rank:   {rank} {tier} Episode {episode} Act {act}
-                {buddiesSection}
-                Agents Unlocked {agentsCount}
-                =
-                RPoints: {rPoints}
-                VPoints: {vPoints}
-                Total VPoints Spent: {totalVPoints}
-                =
-
-                {skinsSection}
-
-                -----------------------------------------------------------------------------------------------------------------------
-                (Start {startPrice}$)
-                G2G: {price}
-                ";
-
-            return template;
+            AccountTemplateData data = CollectTemplateData(sortedSkinNames, sortedKnifeSkins, otherSkins, formattedSkinsList, formattedKnifeSkinsList, skinsSection);
+            result = GenerateTemplateByMode(data, currentMode);
         }
 
+        internal string GenerateTemplateByMode(AccountTemplateData data, SoftMode mode)
+        {
+            switch (mode)
+            {
+                case SoftMode.Skinned:
+                    return GenerateSkinnedTemplate(data);
+                case SoftMode.Ranked:
+                    return GenerateRankedTemplate(data);
+                default:
+                    throw new NotSupportedException("Unknown mode");
+            }
+        }
+
+        private AccountTemplateData CollectTemplateData(
+        List<string> sortedSkinNames,
+        List<string> sortedKnifeSkins,
+        List<string> otherSkins,
+        string formattedSkinsList,
+        string formattedKnifeSkinsList,
+        string skinsSection)
+        {
+            ScreenshotsTextBox screenshotsTextBox = new ScreenshotsTextBox();
+
+            screenshotsTextBox.ShowDialog();
+
+            return new AccountTemplateData
+            {
+                Level = txtLevel.Text,
+                SkinsCount = this.skinsCount.ToString(),
+                Region = combRegion.SelectedItem?.ToString() ?? string.Empty,
+                Screenshots = screenshotsTextBox.ScreenshotsText,
+                Rank = combRank.SelectedItem?.ToString() ?? string.Empty,
+                Tier = this.combTier.SelectedItem?.ToString() ?? string.Empty,
+                Episode = combEpisode.SelectedItem?.ToString() ?? string.Empty,
+                Act = combAct.SelectedItem?.ToString() ?? string.Empty,
+                Buddies = txtBuddies.Text.Replace(Environment.NewLine, " / "),
+                AgentsCount = txtAgentsCount.Text,
+                RPoints = txtRPoints.Text,
+                VPoints = txtVPoints.Text,
+                TotalVPoints = txtTotalVPoints.Text,
+                StartPrice = txtStartPrice.Text,
+                Price = txtPrice.Text,
+                SkinsList = txtSkins.Text,
+                SkinsSection = skinsSection,
+                KnifeSkin = sortedKnifeSkins.Count > 0 ? sortedKnifeSkins[0] : "No Knife",
+                Skin1 = otherSkins.Count > 0 ? otherSkins[0] : "No Skin",
+                Skin2 = otherSkins.Count > 1 ? otherSkins[1] : "No Skin",
+                Skin3 = otherSkins.Count > 2 ? otherSkins[2] : "No Skin",
+                Skin4 = otherSkins.Count > 3 ? otherSkins[3] : "No Skin"
+            };
+        }
+
+        private string GenerateSkinnedTemplate(AccountTemplateData data)
+        {
+            string rankSection = data.Rank
+                is "Full Ranked Ready"
+                or "Ranked Ready"
+                ? data.Rank
+                : $"{data.Rank} {data.Tier} Episode {data.Episode} Act {data.Act}";
+
+            return $@"-----------------------------------------------------------------------------------------------------------------------
+# {{{data.Region}}} |LvL {data.Level}| >Skins: {data.SkinsCount} [{data.KnifeSkin}/{data.Skin1}/{data.Skin2}/{data.Skin3}/{data.Skin4}] #
+=========================
+Screenshots(in the link past '.' before 'com') -------------> {data.Screenshots}
+
+-------------------------------Details*
+Rank:   {rankSection}
+{data.BuddiesSection}
+Agents Unlocked {data.AgentsCount}
+=
+RPoints: {data.RPoints}
+VPoints: {data.VPoints}
+Total VPoints Spent: {data.TotalVPoints}
+=
+
+{data.SkinsSection}
+
+-----------------------------------------------------------------------------------------------------------------------
+(Start {data.StartPrice}$)
+G2G: {data.Price}";
+        }
+
+        private string GenerateRankedTemplate(AccountTemplateData data)
+        {
+            string rankSection = data.Rank
+                is "Full Ranked Ready"
+                or "Ranked Ready"
+                ? data.Rank
+                : $"{data.Rank} {data.Tier} Episode {data.Episode} Act {data.Act}";
+
+            return $@"-----------------------------------------------------------------------------------------------------------------------
+# {{{data.Region}}} |LvL {data.Level}| >{rankSection} | {data.RPoints} >{data.Buddies} | Agents Unlocked {data.AgentsCount} #
+=========================
+Screenshots(in the link past '.' before 'com') -------------> {data.Screenshots}
+
+-------------------------------Details*
+Rank:   {rankSection}
+{data.BuddiesSection}
+Agents Unlocked {data.AgentsCount}
+=
+RPoints: {data.RPoints}
+VPoints: {data.VPoints}
+Total VPoints Spent: {data.TotalVPoints}
+=
+
+{data.SkinsSection}
+
+-----------------------------------------------------------------------------------------------------------------------
+(Start {data.StartPrice}$)
+G2G: {data.Price}";
+        }
+        #endregion
+
+        #region SORT_LOGIC
         // Новый метод для замены названий скинов
         private List<string> ReplaceSkinNamesBeforeSort(List<string> skins)
         {
@@ -617,10 +696,6 @@
                 }
             }
         }
-
-        private void ResetButton_Click(object sender, EventArgs e)
-        {
-            ResetAllFields(this);
-        }
+        #endregion
     }
 }

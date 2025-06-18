@@ -45,8 +45,6 @@
             btnTransformAgents = new Button();
             label6 = new Label();
             combRegion = new ComboBox();
-            txtSkinsCount = new TextBox();
-            label7 = new Label();
             combRank = new ComboBox();
             label8 = new Label();
             combEpisode = new ComboBox();
@@ -72,6 +70,9 @@
             label16 = new Label();
             label19 = new Label();
             ResetButton = new Button();
+            btnSoftMode = new Button();
+            txtSoftMode = new Label();
+            txtSoftModeStatus = new Label();
             SuspendLayout();
             // 
             // txtSkins
@@ -89,7 +90,7 @@
             txtCharacters.Location = new Point(261, 178);
             txtCharacters.Multiline = true;
             txtCharacters.Name = "txtCharacters";
-            txtCharacters.Size = new Size(243, 260);
+            txtCharacters.Size = new Size(243, 303);
             txtCharacters.TabIndex = 1;
             // 
             // txtLevel
@@ -98,15 +99,15 @@
             txtLevel.Location = new Point(510, 27);
             txtLevel.Multiline = true;
             txtLevel.Name = "txtLevel";
-            txtLevel.Size = new Size(70, 27);
+            txtLevel.Size = new Size(109, 23);
             txtLevel.TabIndex = 2;
             // 
             // btnGenerate
             // 
             btnGenerate.BackColor = Color.IndianRed;
-            btnGenerate.Location = new Point(153, 301);
+            btnGenerate.Location = new Point(509, 458);
             btnGenerate.Name = "btnGenerate";
-            btnGenerate.Size = new Size(102, 23);
+            btnGenerate.Size = new Size(244, 23);
             btnGenerate.TabIndex = 3;
             btnGenerate.Text = "Generate Visual";
             btnGenerate.UseVisualStyleBackColor = false;
@@ -174,7 +175,7 @@
             txtUnmatchedSkins.Location = new Point(12, 330);
             txtUnmatchedSkins.Multiline = true;
             txtUnmatchedSkins.Name = "txtUnmatchedSkins";
-            txtUnmatchedSkins.Size = new Size(243, 108);
+            txtUnmatchedSkins.Size = new Size(243, 151);
             txtUnmatchedSkins.TabIndex = 10;
             // 
             // label5
@@ -209,7 +210,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(683, 9);
+            label6.Location = new Point(663, 9);
             label6.Name = "label6";
             label6.Size = new Size(44, 15);
             label6.TabIndex = 14;
@@ -219,28 +220,10 @@
             // 
             combRegion.BackColor = Color.Honeydew;
             combRegion.FormattingEnabled = true;
-            combRegion.Location = new Point(683, 27);
+            combRegion.Location = new Point(666, 27);
             combRegion.Name = "combRegion";
-            combRegion.Size = new Size(70, 23);
+            combRegion.Size = new Size(87, 23);
             combRegion.TabIndex = 15;
-            // 
-            // txtSkinsCount
-            // 
-            txtSkinsCount.BackColor = Color.Honeydew;
-            txtSkinsCount.Location = new Point(596, 27);
-            txtSkinsCount.Multiline = true;
-            txtSkinsCount.Name = "txtSkinsCount";
-            txtSkinsCount.Size = new Size(70, 27);
-            txtSkinsCount.TabIndex = 16;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Location = new Point(596, 9);
-            label7.Name = "label7";
-            label7.Size = new Size(70, 15);
-            label7.TabIndex = 17;
-            label7.Text = "Skins Count";
             // 
             // combRank
             // 
@@ -248,7 +231,7 @@
             combRank.FormattingEnabled = true;
             combRank.Location = new Point(510, 90);
             combRank.Name = "combRank";
-            combRank.Size = new Size(70, 23);
+            combRank.Size = new Size(109, 23);
             combRank.TabIndex = 18;
             // 
             // label8
@@ -256,45 +239,45 @@
             label8.AutoSize = true;
             label8.Location = new Point(510, 72);
             label8.Name = "label8";
-            label8.Size = new Size(33, 15);
+            label8.Size = new Size(38, 15);
             label8.TabIndex = 19;
-            label8.Text = "Rank";
+            label8.Text = "RANK";
             // 
             // combEpisode
             // 
             combEpisode.BackColor = Color.Honeydew;
             combEpisode.FormattingEnabled = true;
-            combEpisode.Location = new Point(652, 90);
+            combEpisode.Location = new Point(666, 90);
             combEpisode.Name = "combEpisode";
-            combEpisode.Size = new Size(48, 23);
+            combEpisode.Size = new Size(47, 23);
             combEpisode.TabIndex = 20;
             // 
             // combAct
             // 
             combAct.BackColor = Color.Honeydew;
             combAct.FormattingEnabled = true;
-            combAct.Location = new Point(706, 90);
+            combAct.Location = new Point(719, 90);
             combAct.Name = "combAct";
-            combAct.Size = new Size(47, 23);
+            combAct.Size = new Size(34, 23);
             combAct.TabIndex = 21;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(648, 72);
+            label9.Location = new Point(666, 72);
             label9.Name = "label9";
-            label9.Size = new Size(48, 15);
+            label9.Size = new Size(13, 15);
             label9.TabIndex = 22;
-            label9.Text = "Episode";
+            label9.Text = "E";
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(702, 72);
+            label10.Location = new Point(719, 72);
             label10.Name = "label10";
-            label10.Size = new Size(25, 15);
+            label10.Size = new Size(15, 15);
             label10.TabIndex = 23;
-            label10.Text = "Act";
+            label10.Text = "A";
             // 
             // txtBuddies
             // 
@@ -373,7 +356,7 @@
             label15.AutoSize = true;
             label15.Location = new Point(510, 316);
             label15.Name = "label15";
-            label15.Size = new Size(108, 15);
+            label15.Size = new Size(109, 15);
             label15.TabIndex = 32;
             label15.Text = "Total VPoints Spent";
             // 
@@ -429,19 +412,19 @@
             // 
             combTier.BackColor = Color.Honeydew;
             combTier.FormattingEnabled = true;
-            combTier.Location = new Point(595, 90);
+            combTier.Location = new Point(625, 90);
             combTier.Name = "combTier";
-            combTier.Size = new Size(48, 23);
+            combTier.Size = new Size(35, 23);
             combTier.TabIndex = 40;
             // 
             // tier
             // 
             tier.AutoSize = true;
-            tier.Location = new Point(595, 72);
+            tier.Location = new Point(625, 72);
             tier.Name = "tier";
-            tier.Size = new Size(26, 15);
+            tier.Size = new Size(14, 15);
             tier.TabIndex = 41;
-            tier.Text = "Tier";
+            tier.Text = "T";
             // 
             // label16
             // 
@@ -469,11 +452,46 @@
             ResetButton.BackColor = Color.DarkRed;
             ResetButton.Location = new Point(12, 458);
             ResetButton.Name = "ResetButton";
-            ResetButton.Size = new Size(746, 23);
+            ResetButton.Size = new Size(61, 23);
             ResetButton.TabIndex = 44;
             ResetButton.Text = "Clear all";
             ResetButton.UseVisualStyleBackColor = false;
             ResetButton.Click += ResetButton_Click;
+            // 
+            // btnSoftMode
+            // 
+            btnSoftMode.BackColor = Color.MidnightBlue;
+            btnSoftMode.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnSoftMode.ForeColor = SystemColors.HighlightText;
+            btnSoftMode.Location = new Point(625, 27);
+            btnSoftMode.Name = "btnSoftMode";
+            btnSoftMode.Size = new Size(35, 23);
+            btnSoftMode.TabIndex = 45;
+            btnSoftMode.Text = "SM";
+            btnSoftMode.UseVisualStyleBackColor = false;
+            btnSoftMode.Click += btnSoftMode_Click;
+            // 
+            // txtSoftMode
+            // 
+            txtSoftMode.AutoSize = true;
+            txtSoftMode.BackColor = Color.Green;
+            txtSoftMode.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            txtSoftMode.Location = new Point(261, 464);
+            txtSoftMode.Name = "txtSoftMode";
+            txtSoftMode.Size = new Size(0, 17);
+            txtSoftMode.TabIndex = 46;
+            // 
+            // txtSoftModeStatus
+            // 
+            txtSoftModeStatus.AutoSize = true;
+            txtSoftModeStatus.BackColor = Color.Green;
+            txtSoftModeStatus.Font = new Font("Consolas", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            txtSoftModeStatus.ForeColor = SystemColors.ButtonFace;
+            txtSoftModeStatus.Location = new Point(261, 466);
+            txtSoftModeStatus.Name = "txtSoftModeStatus";
+            txtSoftModeStatus.Size = new Size(98, 14);
+            txtSoftModeStatus.TabIndex = 47;
+            txtSoftModeStatus.Text = "Mode: Skinned";
             // 
             // ValorantScraper
             // 
@@ -481,6 +499,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientInactiveCaption;
             ClientSize = new Size(765, 493);
+            Controls.Add(txtSoftModeStatus);
+            Controls.Add(txtSoftMode);
+            Controls.Add(btnSoftMode);
             Controls.Add(ResetButton);
             Controls.Add(label19);
             Controls.Add(label16);
@@ -506,8 +527,6 @@
             Controls.Add(combEpisode);
             Controls.Add(label8);
             Controls.Add(combRank);
-            Controls.Add(label7);
-            Controls.Add(txtSkinsCount);
             Controls.Add(combRegion);
             Controls.Add(label6);
             Controls.Add(btnTransformAgents);
@@ -549,8 +568,6 @@
         private Button btnTransformAgents;
         private Label label6;
         private ComboBox combRegion;
-        private TextBox txtSkinsCount;
-        private Label label7;
         private ComboBox combRank;
         private Label label8;
         private ComboBox combEpisode;
@@ -576,5 +593,8 @@
         private Label label16;
         private Label label19;
         private Button ResetButton;
+        private Button btnSoftMode;
+        private Label txtSoftMode;
+        private Label txtSoftModeStatus;
     }
 }
