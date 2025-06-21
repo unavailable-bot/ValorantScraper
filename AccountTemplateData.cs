@@ -14,8 +14,7 @@ namespace ValorantScraper
         public string? Screenshots { get; set; }
         public string? Rank { get; set; }
         public string? Tier { get; set; }
-        public string? Episode { get; set; }
-        public string? Act { get; set; }
+        public string? RankState { get; set; }
         public string? Buddies { get; set; }
         public string? BuddiesSection => !string.IsNullOrEmpty(Buddies) ? $"=\n{Buddies}\n=" : "=";
         public string? AgentsCount { get; set; }

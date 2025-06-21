@@ -47,10 +47,8 @@
             combRegion = new ComboBox();
             combRank = new ComboBox();
             label8 = new Label();
-            combEpisode = new ComboBox();
-            combAct = new ComboBox();
+            combRankState = new ComboBox();
             label9 = new Label();
-            label10 = new Label();
             txtBuddies = new TextBox();
             label11 = new Label();
             txtAgentsCount = new TextBox();
@@ -243,41 +241,23 @@
             label8.TabIndex = 19;
             label8.Text = "RANK";
             // 
-            // combEpisode
+            // combRankState
             // 
-            combEpisode.BackColor = Color.Honeydew;
-            combEpisode.FormattingEnabled = true;
-            combEpisode.Location = new Point(666, 90);
-            combEpisode.Name = "combEpisode";
-            combEpisode.Size = new Size(47, 23);
-            combEpisode.TabIndex = 20;
-            // 
-            // combAct
-            // 
-            combAct.BackColor = Color.Honeydew;
-            combAct.FormattingEnabled = true;
-            combAct.Location = new Point(719, 90);
-            combAct.Name = "combAct";
-            combAct.Size = new Size(34, 23);
-            combAct.TabIndex = 21;
+            combRankState.BackColor = Color.Honeydew;
+            combRankState.FormattingEnabled = true;
+            combRankState.Location = new Point(683, 90);
+            combRankState.Name = "combRankState";
+            combRankState.Size = new Size(70, 23);
+            combRankState.TabIndex = 20;
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(666, 72);
+            label9.Location = new Point(683, 72);
             label9.Name = "label9";
-            label9.Size = new Size(13, 15);
+            label9.Size = new Size(33, 15);
             label9.TabIndex = 22;
-            label9.Text = "E";
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(719, 72);
-            label10.Name = "label10";
-            label10.Size = new Size(15, 15);
-            label10.TabIndex = 23;
-            label10.Text = "A";
+            label9.Text = "State";
             // 
             // txtBuddies
             // 
@@ -414,7 +394,7 @@
             combTier.FormattingEnabled = true;
             combTier.Location = new Point(625, 90);
             combTier.Name = "combTier";
-            combTier.Size = new Size(35, 23);
+            combTier.Size = new Size(52, 23);
             combTier.TabIndex = 40;
             // 
             // tier
@@ -422,9 +402,9 @@
             tier.AutoSize = true;
             tier.Location = new Point(625, 72);
             tier.Name = "tier";
-            tier.Size = new Size(14, 15);
+            tier.Size = new Size(27, 15);
             tier.TabIndex = 41;
-            tier.Text = "T";
+            tier.Text = "Tier";
             // 
             // label16
             // 
@@ -521,10 +501,8 @@
             Controls.Add(txtAgentsCount);
             Controls.Add(label11);
             Controls.Add(txtBuddies);
-            Controls.Add(label10);
             Controls.Add(label9);
-            Controls.Add(combAct);
-            Controls.Add(combEpisode);
+            Controls.Add(combRankState);
             Controls.Add(label8);
             Controls.Add(combRank);
             Controls.Add(combRegion);
@@ -570,10 +548,8 @@
         private ComboBox combRegion;
         private ComboBox combRank;
         private Label label8;
-        private ComboBox combEpisode;
-        private ComboBox combAct;
+        private ComboBox combRankState;
         private Label label9;
-        private Label label10;
         private TextBox txtBuddies;
         private Label label11;
         private TextBox txtAgentsCount;

@@ -1,4 +1,6 @@
-﻿namespace ValorantScraper
+﻿using System.Windows.Forms;
+
+namespace ValorantScraper
 {
     public interface IImageDisplay
     {
@@ -92,15 +94,10 @@
             combRegion.Items.AddRange(new string[] { "AP", "EU", "NA", "LATAM", "BR", "KR", "TUR" });
 
             // Добавляем значения в ComboBox для Rank
-            combRank.Items.AddRange(new string[] { "Ranked Ready", "Full Ranked Ready",
-                                               "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
-                                               "DIAMOND", "ASCENDANT", "IMMORTAL", "RADIANT" });
-
+            combRank.Items.AddRange(new string[] { "Ranked Ready", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
+                                                   "DIAMOND", "ASCENDANT", "IMMORTAL", "RADIANT" });
             // Добавляем значения в ComboBox для Episode
-            combEpisode.Items.AddRange(new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "V25" });
-
-            // Добавляем значения в ComboBox для Act
-            combAct.Items.AddRange(new string[] { "1", "2", "3" });
+            combRankState.Items.AddRange(new string[] { "Expired", "Current" });
 
             // Добавляем значения в ComboBox для Act
             combTier.Items.AddRange(new string[] { "1", "2", "3" });
@@ -476,12 +473,20 @@
             string formattedSkinsList = string.Join(Environment.NewLine, otherSkins);
             string formattedKnifeSkinsList = string.Join(Environment.NewLine, sortedKnifeSkins);
 
-            // Проверяем, есть ли ножи
-            string skinsSection = sortedKnifeSkins.Count > 0
-                ? $"-------------------------GunSkins$\n{formattedSkinsList}\n\n-------------------------KnifeSkins$\n{formattedKnifeSkinsList}"
-                : $"-------------------------GunSkins$\n{formattedSkinsList}";
+            string gunSkins = otherSkins.Count > 0
+                ? $"-------------------------GunSkins$\n{formattedSkinsList}"
+                : string.Empty;
 
-            AccountTemplateData data = CollectTemplateData(sortedSkinNames, sortedKnifeSkins, otherSkins, formattedSkinsList, formattedKnifeSkinsList, skinsSection);
+            // Проверяем, есть ли ножи
+            string knifeSkins = sortedKnifeSkins.Count > 0
+                ? $"-------------------------KnifeSkins$\n{formattedKnifeSkinsList}"
+                : string.Empty;
+
+            string finalSkinsSection = otherSkins.Count > 0 && sortedKnifeSkins.Count > 0
+                ? $"{gunSkins}\n\n{knifeSkins}"
+                : $"{gunSkins}{knifeSkins}";
+
+            AccountTemplateData data = CollectTemplateData(sortedSkinNames, sortedKnifeSkins, otherSkins, formattedSkinsList, formattedKnifeSkinsList, finalSkinsSection);
             result = GenerateTemplateByMode(data, currentMode);
         }
 
@@ -517,9 +522,8 @@
                 Region = combRegion.SelectedItem?.ToString() ?? string.Empty,
                 Screenshots = screenshotsTextBox.ScreenshotsText,
                 Rank = combRank.SelectedItem?.ToString() ?? string.Empty,
+                RankState = combRankState.SelectedItem?.ToString() ?? string.Empty,
                 Tier = this.combTier.SelectedItem?.ToString() ?? string.Empty,
-                Episode = combEpisode.SelectedItem?.ToString() ?? string.Empty,
-                Act = combAct.SelectedItem?.ToString() ?? string.Empty,
                 Buddies = txtBuddies.Text.Replace(Environment.NewLine, " / "),
                 AgentsCount = txtAgentsCount.Text,
                 RPoints = txtRPoints.Text,
@@ -540,10 +544,9 @@
         private string GenerateSkinnedTemplate(AccountTemplateData data)
         {
             string rankSection = data.Rank
-                is "Full Ranked Ready"
-                or "Ranked Ready"
+                is "Ranked Ready"
                 ? data.Rank
-                : $"{data.Rank} {data.Tier} Episode {data.Episode} Act {data.Act}";
+                : $"{data.Rank} {data.Tier} [{data.RankState}]";
 
             return $@"-----------------------------------------------------------------------------------------------------------------------
 # {{{data.Region}}} |LvL {data.Level}| >Skins: {data.SkinsCount} [{data.KnifeSkin}/{data.Skin1}/{data.Skin2}/{data.Skin3}/{data.Skin4}] #
@@ -570,13 +573,14 @@ G2G: {data.Price}";
         private string GenerateRankedTemplate(AccountTemplateData data)
         {
             string rankSection = data.Rank
-                is "Full Ranked Ready"
-                or "Ranked Ready"
+                is "Ranked Ready"
                 ? data.Rank
-                : $"{data.Rank} {data.Tier} Episode {data.Episode} Act {data.Act}";
+                : $"{data.Rank} {data.Tier} [{data.RankState}]";
+
+            string buddiesInTitle = data.Buddies == string.Empty ? data.Buddies : data.Buddies + " | ";
 
             return $@"-----------------------------------------------------------------------------------------------------------------------
-# {{{data.Region}}} |LvL {data.Level}| >{rankSection} | {data.RPoints} >{data.Buddies} | Agents Unlocked {data.AgentsCount} #
+# {{{data.Region}}} |LvL {data.Level}| >{rankSection} | {data.RPoints} RP >{buddiesInTitle}Agents Unlocked {data.AgentsCount} #
 =========================
 Screenshots(in the link past '.' before 'com') -------------> {data.Screenshots}
 
